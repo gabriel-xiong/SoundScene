@@ -193,5 +193,4 @@ soundscene/
 
 ## Built At
 
-HooKEM Hacks — University of Texas at Austin. In collaboration with Praneel Bhagavatula, Anshul Mistry, and Ashwin Vijayakumar. 
-·
+HooKEM Hacks @ University of Texas at Austin. In collaboration with Praneel Bhagavatula, Anshul Mistry, and Ashwin Vijayakumar. 
