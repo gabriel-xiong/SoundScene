@@ -6,6 +6,17 @@ The project explores a practical systems question: how can probabilistic multimo
 
 **[Open the interactive demo](https://auxscene.vercel.app/)** — explore a pre-rendered scene and manipulate its individual sound sources in the spatial editor.
 
+## At a glance
+
+| | |
+|---|---|
+| **Core challenge** | Convert probabilistic multimodal output into a structured, editable audio system |
+| **Pipeline** | Gemini scene planning → bounded parallel ElevenLabs generation → deterministic DSP → Web Audio editing |
+| **Output** | A stereo mix plus three to six independently editable stems |
+| **Inspectable evidence** | Typed plans, bounded concurrency, explicit retry/cache policy, and deterministic DSP stages |
+| **Stack** | FastAPI, Pydantic, NumPy/SciPy/Pedalboard, React, TypeScript, Web Audio API |
+| **Live demo** | [auxscene.vercel.app](https://auxscene.vercel.app/) |
+
 ## System overview
 
 SoundScene separates scene creation into three layers:
@@ -95,29 +106,6 @@ For a text prompt such as `rainy Tokyo street at night`:
 7. The client can play the mix directly or open the stem-level spatial editor.
 
 Image input follows the same rendering path after Gemini identifies visible sound-producing objects, environmental context, and spatial cues. Voice input uses the browser Speech Recognition API to populate the text prompt.
-
-## Evaluation
-
-The repository includes separate benchmark modes for deterministic local DSP, cache lookup, live sequential-versus-concurrent generation, and before/after audio review. Live modes require explicit acknowledgement because they make paid provider calls.
-
-The checked-in local run processed synthetic three-second stems on Windows 11 with Python 3.14.4. Each result below is based on 30 measured repetitions after three warm-up runs:
-
-| Stem count | Median DSP time | P95 DSP time | Median audio seconds / wall second |
-|---:|---:|---:|---:|
-| 3 | 86.5 ms | 120.5 ms | 104.0x |
-| 4 | 117.6 ms | 261.9 ms | 102.0x |
-| 5 | 139.0 ms | 161.4 ms | 107.9x |
-| 6 | 170.7 ms | 240.8 ms | 105.5x |
-
-These measurements characterize local signal processing only. They do not include model inference, network latency, image generation, or human-perceived output quality. No live provider-latency result is claimed here.
-
-Run the local suite with:
-
-```bash
-python benchmarks/run_benchmarks.py local --repetitions 30 --warmups 3 --audio-duration 3
-```
-
-See [`benchmarks/README.md`](benchmarks/README.md) for benchmark scopes and output formats.
 
 ## Technology
 
@@ -240,8 +228,6 @@ frontend/src/
   api.ts                 typed backend client
   components/
     SpatialEditor/       Web Audio engine, spatial map, timeline, and controls
-benchmarks/              reproducible local and live benchmark harness
-tests/                   benchmark-methodology tests
 ```
 
 ## Current limitations
@@ -262,16 +248,15 @@ A production design would move rendering into idempotent background jobs, store 
 
 ## Verification
 
-The current source passes:
+The repository exposes static checks for both halves of the application:
 
 ```bash
-python -m pytest -q
-python -m ruff check backend benchmarks tests
-npm --prefix frontend run lint
+python -m compileall backend
+python -m ruff check backend
 npm --prefix frontend run build
 ```
 
-The existing Python suite validates benchmark dataset and summary behavior. Broader route, provider-mock, DSP correctness, browser, and end-to-end coverage remain future work.
+No automated test or benchmark suite is currently committed, so this README does not claim measured latency, throughput, or output-quality gains. Provider-mock tests, DSP invariants, browser tests, and end-to-end evaluation remain future work.
 
 ## Project context
 
