@@ -10,7 +10,7 @@ The project explores a practical systems question: how can probabilistic multimo
 
 | | |
 |---|---|
-| **Core challenge** | Convert probabilistic multimodal output into a structured, editable audio system |
+| **Problem** | Turn a text, voice, or image prompt into a layered soundscape users can inspect and edit—not one opaque audio file |
 | **Pipeline** | Gemini scene planning → bounded parallel ElevenLabs generation → deterministic DSP → Web Audio editing |
 | **Output** | A stereo mix plus three to six independently editable stems |
 | **Inspectable evidence** | Typed plans, bounded concurrency, explicit retry/cache policy, and deterministic DSP stages |
