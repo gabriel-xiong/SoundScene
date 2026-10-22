@@ -26,21 +26,28 @@ SoundScene separates scene creation into three layers:
 3. **Interaction:** The React client loads individual stems into separate Web Audio graphs so users can reposition, mute, solo, adjust, regenerate, and export them.
 
 ```mermaid
-flowchart TD
-    A[Text, speech, or image] --> B{Input analysis}
-    B -->|Concrete text| D[Scene decomposition]
-    B -->|Abstract text| C[Google Search grounding]
-    B -->|Image| I[Visual sound-source analysis]
-    C --> D
-    I --> D
-    D --> E[Typed 3-6 stem audio plan]
-    E --> F[Prompt and mix refinement]
-    F --> G[Bounded concurrent generation]
-    G --> H[Silence detection and audio review]
-    H -->|Optional retry| G
-    H --> J[Deterministic DSP and timeline mix]
-    J --> K[Stereo WAV and individual stems]
-    K --> L[Web Audio spatial editor]
+flowchart TB
+    I["Text · speech · image"]
+
+    subgraph PLAN["1 · PLAN"]
+        A["Classify, ground, or analyze input"]
+        A --> B["Typed scene plan<br/>3–6 independent stems"]
+    end
+
+    subgraph RENDER["2 · RENDER"]
+        C["Generate stems in parallel"]
+        C --> D["Review audio + bounded retry"]
+        D --> E["Deterministic DSP + timeline mix"]
+    end
+
+    subgraph EDIT["3 · EDIT"]
+        F["Stereo mix + individual stems"]
+        F --> G["Web Audio spatial editor"]
+    end
+
+    I --> A
+    B --> C
+    E --> F
 ```
 
 ## Engineering highlights
